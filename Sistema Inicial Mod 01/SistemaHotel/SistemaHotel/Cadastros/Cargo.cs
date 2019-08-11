@@ -23,6 +23,35 @@ namespace SistemaHotel.Cadastros
             InitializeComponent();
         }
 
+        //Formata o Data Grid para uma listagem mais limpa
+        private void FormatarDG()
+        {
+            grid.Columns[0].HeaderText = "ID";
+            grid.Columns[1].HeaderText = "Cargo";
+
+            //ocultando a coluna desnecessaria
+            grid.Columns[0].Visible = false;
+
+            //tamanho da coluna
+            grid.Columns[1].Width = 200;
+        }
+
+        //Lista as informações do banco de dados
+        private void Listar()
+        {
+           
+            conect.abrirConexao();
+            sql = "SELECT * FROM cargo order by cargo asc";
+            cmd = new MySqlCommand(sql, conect.con);
+            MySqlDataAdapter da = new MySqlDataAdapter();
+            da.SelectCommand = cmd;
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+            grid.DataSource = dt;
+            conect.fecharConexao();
+            FormatarDG();
+        }
+
         private void BtnNovo_Click(object sender, EventArgs e)
         {
             txtNome.Enabled = true;
@@ -56,11 +85,12 @@ namespace SistemaHotel.Cadastros
             btnSalvar.Enabled = false;
             txtNome.Text = "";
             txtNome.Enabled = false;
+            Listar();
         }
 
         private void FrmCargo_Load(object sender, EventArgs e)
         {
-
+            Listar();
         }
 
         private void Grid_Click(object sender, EventArgs e)
