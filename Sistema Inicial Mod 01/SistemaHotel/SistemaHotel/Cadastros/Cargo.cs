@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,6 +13,11 @@ namespace SistemaHotel.Cadastros
 {
     public partial class FrmCargo : Form
     {
+
+        // variavel de conexao para utilizar nos botoes
+        Conexao conect = new Conexao();
+        string sql;
+        MySqlCommand cmd;
         public FrmCargo()
         {
             InitializeComponent();
@@ -37,6 +43,13 @@ namespace SistemaHotel.Cadastros
                 return;
             }
 
+            //programação do botao salvar
+            conect.abrirConexao();
+            sql = "INSERT INTO cargo (cargo) VALUES (@cargo)";
+            cmd = new MySqlCommand(sql, conect.con);
+            cmd.Parameters.AddWithValue("@cargo", txtNome.Text);
+            cmd.ExecuteNonQuery();
+            conect.fecharConexao();
 
             MessageBox.Show("Registro Salvo com Sucesso", "Dados Salvo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             btnNovo.Enabled = true;
@@ -93,6 +106,11 @@ namespace SistemaHotel.Cadastros
                 txtNome.Text = "";
                 txtNome.Enabled = false;
             }
+        }
+
+        private void TxtNome_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

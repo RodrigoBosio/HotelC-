@@ -10,7 +10,9 @@ namespace SistemaHotel
     class Conexao
     {
         //informaçõe necessarias para a conexao com o banco de dados(atualmente conectado localmente)
-        string conect = "SERVER=localhost; DATABASE=hotel; UID=root, PWD=; PORT=;";
+        //Atualizado a maneira necessaria de conexao do banco de dados
+        string conect = "Server=localhost;Port=3306;Database=hotel;Uid=root;Pwd=;";
+
         public MySqlConnection con = null;
 
         //metodo para abrir a conexao, ele necessita de um metodo para fecha-la
