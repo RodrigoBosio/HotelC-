@@ -23,6 +23,36 @@ namespace SistemaHotel.Cadastros
             InitializeComponent();
         }
 
+        //Formata o Data Grid para uma listagem mais limpa
+        private void FormatarDG()
+        {
+            grid.Columns[0].HeaderText = "ID";
+            grid.Columns[1].HeaderText = "Nome";
+            grid.Columns[2].HeaderText = "CPF";
+            grid.Columns[3].HeaderText = "Endereço";
+            grid.Columns[4].HeaderText = "Telefone";
+            grid.Columns[5].HeaderText = "Cargo";
+            grid.Columns[6].HeaderText = "Data";
+
+            //ocultando a coluna desnecessaria
+            grid.Columns[0].Visible = false;
+
+        }
+        //Lista as informações do banco de dados
+        private void Listar()
+        {
+
+            conect.abrirConexao();
+            sql = "SELECT * FROM funcionario order by nome asc";
+            cmd = new MySqlCommand(sql, conect.con);
+            MySqlDataAdapter da = new MySqlDataAdapter();
+            da.SelectCommand = cmd;
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+            grid.DataSource = dt;
+            conect.fecharConexao();
+            FormatarDG();
+        }
 
         private void CarregarComboBox()
         {
@@ -74,6 +104,7 @@ namespace SistemaHotel.Cadastros
 
         private void FrmFuncionarios_Load(object sender, EventArgs e)
         {
+            Listar();
             rbNome.Checked = true;
             CarregarComboBox();
 
@@ -132,19 +163,28 @@ namespace SistemaHotel.Cadastros
 
 
             //CÓDIGO DO BOTÃO PARA SALVAR
+            conect.abrirConexao();
+            sql = "INSERT INTO funcionario (nome, cpf, endereco, telefone, cargo, data) VALUES (@nome, @cpf, @endereco, @telefone, @cargo, curDate())";
+            cmd = new MySqlCommand(sql, conect.con);
+            cmd.Parameters.AddWithValue("@nome", txtNome.Text);
+            cmd.Parameters.AddWithValue("@cpf", txtCPF.Text);
+            cmd.Parameters.AddWithValue("@endereco", txtEndereco.Text);
+            cmd.Parameters.AddWithValue("@telefone", txtTelefone.Text);
+            cmd.Parameters.AddWithValue("@cargo", cbCargo.Text);
+            cmd.ExecuteNonQuery();
+            conect.fecharConexao();
 
             MessageBox.Show("Registro Salvo com Sucesso!", "Dados Salvo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             btnNovo.Enabled = true;
             btnSalvar.Enabled = false;
             limparCampos();
             desabilitarCampos();
+            Listar();
         }
 
         private void Grid_Click(object sender, EventArgs e)
         {
-            btnEditar.Enabled = true;
-            btnExcluir.Enabled = true;
-            btnSalvar.Enabled = false;
+            
         }
 
         private void BtnEditar_Click(object sender, EventArgs e)
@@ -166,6 +206,17 @@ namespace SistemaHotel.Cadastros
 
 
             //CÓDIGO DO BOTÃO PARA EDITAR
+            conect.abrirConexao();
+            sql = "UPDATE funcionario SET nome =@nome, cpf =@cpf, endereco =@endereco, telefone =@telefone, cargo =@cargo where id =@id";
+            cmd = new MySqlCommand(sql, conect.con);
+            cmd.Parameters.AddWithValue("@Nome", txtNome.Text);
+            cmd.Parameters.AddWithValue("@cpf", txtCPF.Text);
+            cmd.Parameters.AddWithValue("@endereco", txtEndereco.Text);
+            cmd.Parameters.AddWithValue("@telefone", txtTelefone.Text);
+            cmd.Parameters.AddWithValue("@cargo", cbCargo.Text);
+            cmd.Parameters.AddWithValue("@id", id);
+            cmd.ExecuteNonQuery();
+            conect.fecharConexao();
 
             MessageBox.Show("Registro Editado com Sucesso!", "Dados Editados", MessageBoxButtons.OK, MessageBoxIcon.Information);
             btnNovo.Enabled = true;
@@ -173,6 +224,7 @@ namespace SistemaHotel.Cadastros
             btnExcluir.Enabled = false;
             limparCampos();
             desabilitarCampos();
+            Listar();
         }
 
         private void BtnExcluir_Click(object sender, EventArgs e)
@@ -181,7 +233,12 @@ namespace SistemaHotel.Cadastros
             if (resultado == DialogResult.Yes)
             {
                 //CÓDIGO DO BOTÃO PARA EXCLUIR
-
+                conect.abrirConexao();
+                sql = "DELETE FROM funcionario where id =@id";
+                cmd = new MySqlCommand(sql, conect.con);
+                cmd.Parameters.AddWithValue("@id", id);
+                cmd.ExecuteNonQuery();
+                conect.fecharConexao();
 
                 MessageBox.Show("Registro Excluido com Sucesso!", "Registro Excluido", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 btnNovo.Enabled = true;
@@ -189,7 +246,26 @@ namespace SistemaHotel.Cadastros
                 btnExcluir.Enabled = false;
                 txtNome.Text = "";
                 txtNome.Enabled = false;
+                Listar();
             }
+        }
+
+        private void Grid_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            btnEditar.Enabled = true;
+            btnExcluir.Enabled = true;
+            btnSalvar.Enabled = false;
+            txtNome.Enabled = true;
+            habilitarCampos();
+
+            //recuperando como texto o indice da linha que clicar 
+            id = grid.CurrentRow.Cells[0].Value.ToString();
+            txtNome.Text = grid.CurrentRow.Cells[1].Value.ToString();
+            txtCPF.Text = grid.CurrentRow.Cells[2].Value.ToString();
+            txtEndereco.Text = grid.CurrentRow.Cells[3].Value.ToString();
+            txtTelefone.Text = grid.CurrentRow.Cells[4].Value.ToString();
+            cbCargo.Text = grid.CurrentRow.Cells[5].Value.ToString();
+            
         }
     }
 }

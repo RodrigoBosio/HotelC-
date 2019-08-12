@@ -169,6 +169,7 @@
             this.grid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.grid.Size = new System.Drawing.Size(595, 186);
             this.grid.TabIndex = 60;
+            this.grid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.Grid_CellContentClick);
             this.grid.Click += new System.EventHandler(this.Grid_Click);
             // 
             // txtBuscarCPF

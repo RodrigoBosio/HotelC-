@@ -112,6 +112,7 @@
             this.grid.Size = new System.Drawing.Size(264, 300);
             this.grid.TabIndex = 72;
             this.grid.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.Grid_CellClick);
+            this.grid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.Grid_CellContentClick);
             // 
             // txtNome
             // 
