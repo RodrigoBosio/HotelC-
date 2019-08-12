@@ -18,6 +18,7 @@ namespace SistemaHotel.Cadastros
         Conexao conect = new Conexao();
         string sql;
         MySqlCommand cmd;
+        string id;
         public FrmCargo()
         {
             InitializeComponent();
@@ -93,12 +94,6 @@ namespace SistemaHotel.Cadastros
             Listar();
         }
 
-        private void Grid_Click(object sender, EventArgs e)
-        {
-            btnEditar.Enabled = true;
-            btnExcluir.Enabled = true;
-            btnSalvar.Enabled = false;
-        }
 
         private void BtnEditar_Click(object sender, EventArgs e)
         {
@@ -112,6 +107,14 @@ namespace SistemaHotel.Cadastros
 
 
             //CÓDIGO DO BOTÃO PARA EDITAR
+            conect.abrirConexao();
+            sql = "UPDATE cargo SET cargo =@cargo where id =@id";
+            cmd = new MySqlCommand(sql, conect.con);
+            cmd.Parameters.AddWithValue("@cargo", txtNome.Text);
+            cmd.Parameters.AddWithValue("@id", id);
+            cmd.ExecuteNonQuery();
+            conect.fecharConexao();
+
 
             MessageBox.Show("Registro Editado com Sucesso!", "Dados Editados", MessageBoxButtons.OK, MessageBoxIcon.Information);
             btnNovo.Enabled = true;
@@ -119,6 +122,7 @@ namespace SistemaHotel.Cadastros
             btnExcluir.Enabled = false;
             txtNome.Text = "";
             txtNome.Enabled = false;
+            Listar();
         }
 
         private void BtnExcluir_Click(object sender, EventArgs e)
@@ -141,6 +145,19 @@ namespace SistemaHotel.Cadastros
         private void TxtNome_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+
+        private void Grid_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            btnEditar.Enabled = true;
+            btnExcluir.Enabled = true;
+            btnSalvar.Enabled = false;
+            txtNome.Enabled = true;
+
+            //recuperando como texto o indice da linha que clicar 
+            id = grid.CurrentRow.Cells[0].Value.ToString();
+            txtNome.Text = grid.CurrentRow.Cells[1].Value.ToString();
         }
     }
 }

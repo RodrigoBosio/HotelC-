@@ -108,7 +108,7 @@
             this.grid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.grid.Size = new System.Drawing.Size(264, 300);
             this.grid.TabIndex = 72;
-            this.grid.Click += new System.EventHandler(this.Grid_Click);
+            this.grid.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.Grid_CellClick);
             // 
             // txtNome
             // 
