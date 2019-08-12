@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,11 +13,31 @@ namespace SistemaHotel.Cadastros
 {
     public partial class FrmFuncionarios : Form
     {
+        // variavel de conexao para utilizar nos botoes
+        Conexao conect = new Conexao();
+        string sql;
+        MySqlCommand cmd;
+        string id;
         public FrmFuncionarios()
         {
             InitializeComponent();
         }
 
+
+        private void CarregarComboBox()
+        {
+            conect.abrirConexao();
+            sql = "SELECT * FROM cargo order by cargo asc";
+            cmd = new MySqlCommand(sql, conect.con);
+            MySqlDataAdapter da = new MySqlDataAdapter();
+            da.SelectCommand = cmd;
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+            cbCargo.DataSource = dt;
+            cbCargo.DisplayMember = "cargo";
+                 
+            conect.fecharConexao();
+        }
 
         private void habilitarCampos()
         {
@@ -54,6 +75,7 @@ namespace SistemaHotel.Cadastros
         private void FrmFuncionarios_Load(object sender, EventArgs e)
         {
             rbNome.Checked = true;
+            CarregarComboBox();
 
         }
 
@@ -78,6 +100,12 @@ namespace SistemaHotel.Cadastros
 
         private void BtnNovo_Click(object sender, EventArgs e)
         {
+            if (cbCargo.Text == "")
+            {
+                MessageBox.Show("Cadastre antes um cargo!");
+                Close();
+            }
+
             habilitarCampos();
             btnSalvar.Enabled = true;
             btnNovo.Enabled = false;
