@@ -131,7 +131,12 @@ namespace SistemaHotel.Cadastros
             if (resultado == DialogResult.Yes)
             {
                 //CÓDIGO DO BOTÃO PARA EXCLUIR
-
+                conect.abrirConexao();
+                sql = "DELETE FROM cargo where id =@id";
+                cmd = new MySqlCommand(sql, conect.con);
+                cmd.Parameters.AddWithValue("@id", id);
+                cmd.ExecuteNonQuery();
+                conect.fecharConexao();
 
                 MessageBox.Show("Registro Excluido com Sucesso!", "Registro Excluido", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 btnNovo.Enabled = true;
@@ -139,6 +144,7 @@ namespace SistemaHotel.Cadastros
                 btnExcluir.Enabled = false;
                 txtNome.Text = "";
                 txtNome.Enabled = false;
+                Listar();
             }
         }
 
