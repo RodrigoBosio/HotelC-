@@ -54,6 +54,37 @@ namespace SistemaHotel.Cadastros
             FormatarDG();
         }
 
+        private void BuscarNome()
+        {
+            conect.abrirConexao();
+            // sql linha de codigo onde busca o nome letra por letra utilizando o comando LIKE
+            sql = "SELECT * FROM funcionario where nome LIKE @nome order by nome asc";
+            cmd = new MySqlCommand(sql, conect.con);
+            cmd.Parameters.AddWithValue("@nome", txtBuscarNome.Text + "%");
+            MySqlDataAdapter da = new MySqlDataAdapter();
+            da.SelectCommand = cmd;
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+            grid.DataSource = dt;
+            conect.fecharConexao();
+            FormatarDG();
+        }
+
+        private void BuscarCPF()
+        {
+            conect.abrirConexao();
+            sql = "SELECT * FROM funcionario where cpf = @cpf order by nome asc";
+            cmd = new MySqlCommand(sql, conect.con);
+            cmd.Parameters.AddWithValue("@cpf", txtBuscarCPF.Text);
+            MySqlDataAdapter da = new MySqlDataAdapter();
+            da.SelectCommand = cmd;
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+            grid.DataSource = dt;
+            conect.fecharConexao();
+            FormatarDG();
+        }
+
         private void CarregarComboBox()
         {
             conect.abrirConexao();
@@ -266,6 +297,24 @@ namespace SistemaHotel.Cadastros
             txtTelefone.Text = grid.CurrentRow.Cells[4].Value.ToString();
             cbCargo.Text = grid.CurrentRow.Cells[5].Value.ToString();
             
+        }
+
+        private void TxtBuscarNome_TextChanged(object sender, EventArgs e)
+        {
+            BuscarNome();
+        }
+
+        private void TxtBuscarCPF_TextChanged(object sender, EventArgs e)
+        {
+            if (txtBuscarCPF.Text == "   .   .   -")
+            {
+                Listar();
+            }
+            else
+            {
+                BuscarCPF();
+            }
+               
         }
     }
 }

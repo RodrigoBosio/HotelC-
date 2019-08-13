@@ -67,6 +67,7 @@
             this.txtBuscarNome.Name = "txtBuscarNome";
             this.txtBuscarNome.Size = new System.Drawing.Size(115, 20);
             this.txtBuscarNome.TabIndex = 50;
+            this.txtBuscarNome.TextChanged += new System.EventHandler(this.TxtBuscarNome_TextChanged);
             // 
             // txtNome
             // 
@@ -174,12 +175,13 @@
             // 
             // txtBuscarCPF
             // 
-            this.txtBuscarCPF.Location = new System.Drawing.Point(522, 38);
+            this.txtBuscarCPF.Location = new System.Drawing.Point(522, 12);
             this.txtBuscarCPF.Mask = "000,000,000-00";
             this.txtBuscarCPF.Name = "txtBuscarCPF";
             this.txtBuscarCPF.Size = new System.Drawing.Size(115, 20);
             this.txtBuscarCPF.TabIndex = 61;
             this.txtBuscarCPF.Visible = false;
+            this.txtBuscarCPF.TextChanged += new System.EventHandler(this.TxtBuscarCPF_TextChanged);
             // 
             // rbNome
             // 
