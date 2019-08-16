@@ -17,7 +17,7 @@ namespace SistemaHotel.Cadastros
         Conexao conect = new Conexao();
         string sql;
         MySqlCommand cmd;
-        string id;
+        string id, cpfAntigo;
         public FrmFuncionarios()
         {
             InitializeComponent();
@@ -202,6 +202,23 @@ namespace SistemaHotel.Cadastros
             cmd.Parameters.AddWithValue("@endereco", txtEndereco.Text);
             cmd.Parameters.AddWithValue("@telefone", txtTelefone.Text);
             cmd.Parameters.AddWithValue("@cargo", cbCargo.Text);
+
+            //Verificar se o CPF do usuario ja existe no Banco de Dados
+            MySqlCommand cmdVerificar;
+            cmdVerificar = new MySqlCommand("SELECT * FROM funcionario where cpf =@cpf", conect.con);
+            cmdVerificar.Parameters.AddWithValue("@cpf", txtCPF.Text);
+            MySqlDataAdapter da = new MySqlDataAdapter();
+            da.SelectCommand = cmdVerificar;
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+            if (dt.Rows.Count > 0)
+            {
+                MessageBox.Show("CPF ja registrado", "Dados Salvo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                txtCPF.Text = "";
+                txtCPF.Focus();
+                return;
+            }
+
             cmd.ExecuteNonQuery();
             conect.fecharConexao();
 
@@ -246,6 +263,26 @@ namespace SistemaHotel.Cadastros
             cmd.Parameters.AddWithValue("@telefone", txtTelefone.Text);
             cmd.Parameters.AddWithValue("@cargo", cbCargo.Text);
             cmd.Parameters.AddWithValue("@id", id);
+
+            //Verificação CPF existente e teste para poder modificar o cadastro do usuario
+            if (txtCPF.Text != cpfAntigo)
+            {
+                MySqlCommand cmdVerificar;
+                cmdVerificar = new MySqlCommand("SELECT * FROM funcionario where cpf =@cpf", conect.con);
+                cmdVerificar.Parameters.AddWithValue("@cpf", txtCPF.Text);
+                MySqlDataAdapter da = new MySqlDataAdapter();
+                da.SelectCommand = cmdVerificar;
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+                if (dt.Rows.Count > 0)
+                {
+                    MessageBox.Show("CPF ja registrado", "Dados Salvo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    txtCPF.Text = "";
+                    txtCPF.Focus();
+                    return;
+                }
+            }
+
             cmd.ExecuteNonQuery();
             conect.fecharConexao();
 
@@ -283,6 +320,8 @@ namespace SistemaHotel.Cadastros
 
         private void Grid_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
+           
+
             btnEditar.Enabled = true;
             btnExcluir.Enabled = true;
             btnSalvar.Enabled = false;
@@ -296,6 +335,8 @@ namespace SistemaHotel.Cadastros
             txtEndereco.Text = grid.CurrentRow.Cells[3].Value.ToString();
             txtTelefone.Text = grid.CurrentRow.Cells[4].Value.ToString();
             cbCargo.Text = grid.CurrentRow.Cells[5].Value.ToString();
+
+            cpfAntigo = grid.CurrentRow.Cells[2].Value.ToString();
             
         }
 

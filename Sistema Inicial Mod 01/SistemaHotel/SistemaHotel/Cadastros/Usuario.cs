@@ -17,7 +17,7 @@ namespace SistemaHotel.Cadastros
         Conexao conect = new Conexao();
         string sql;
         MySqlCommand cmd;
-        string id;
+        string id, usuarioAntigo;
         public FrmUsuario()
         {
             InitializeComponent();
@@ -155,12 +155,128 @@ namespace SistemaHotel.Cadastros
             cmd.Parameters.AddWithValue("@usuario", txtUsuario.Text);
             cmd.Parameters.AddWithValue("@senha", txtSenha.Text);
 
+            //Verificar se o nome do usuario ja existe no Banco de Dados
+            MySqlCommand cmdVerificar;
+            cmdVerificar = new MySqlCommand("SELECT * FROM usuario where usuario =@usuario", conect.con);
+            cmdVerificar.Parameters.AddWithValue("@usuario", txtUsuario.Text);
+            MySqlDataAdapter da = new MySqlDataAdapter();
+            da.SelectCommand = cmdVerificar;
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+            if (dt.Rows.Count > 0)
+            {
+                MessageBox.Show("Usuario ja registrado", "Dados Salvo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                txtUsuario.Text = "";
+                txtUsuario.Focus();
+                return;
+            }
+           
+
             cmd.ExecuteNonQuery();
             conect.fecharConexao();
 
             MessageBox.Show("Registro Salvo com Sucesso!", "Dados Salvo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             btnNovo.Enabled = true;
             btnSalvar.Enabled = false;
+            limparCampos();
+            desabilitarCampos();
+            Listar();
+        }
+
+        private void Grid_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            btnEditar.Enabled = true;
+            btnExcluir.Enabled = true;
+            btnSalvar.Enabled = false;
+            txtNome.Enabled = true;
+            habilitarCampos();
+
+            //recuperando como texto o indice da linha que clicar 
+            id = grid.CurrentRow.Cells[0].Value.ToString();
+            txtNome.Text = grid.CurrentRow.Cells[1].Value.ToString();
+            cbCargo.Text = grid.CurrentRow.Cells[2].Value.ToString();
+            txtUsuario.Text = grid.CurrentRow.Cells[3].Value.ToString();
+            txtSenha.Text = grid.CurrentRow.Cells[4].Value.ToString();
+           
+            usuarioAntigo = grid.CurrentRow.Cells[3].Value.ToString();
+        }
+
+        private void BtnExcluir_Click(object sender, EventArgs e)
+        {
+            var resultado = MessageBox.Show("Deseja Realmente Excluir o Usuário?", "Excluir Usuário", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (resultado == DialogResult.Yes)
+            {
+                //CÓDIGO DO BOTÃO PARA EXCLUIR
+                conect.abrirConexao();
+                sql = "DELETE FROM usuario where id =@id";
+                cmd = new MySqlCommand(sql, conect.con);
+                cmd.Parameters.AddWithValue("@id", id);
+                cmd.ExecuteNonQuery();
+                conect.fecharConexao();
+
+                MessageBox.Show("Usuário Excluido com Sucesso!", "Usuário Excluido", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                btnNovo.Enabled = true;
+                btnEditar.Enabled = false;
+                btnExcluir.Enabled = false;
+                txtNome.Text = "";
+                txtNome.Enabled = false;
+                txtUsuario.Text = "";
+                txtUsuario.Enabled = false;
+                txtSenha.Text = "";
+                txtSenha.Enabled = false;
+                cbCargo.Enabled = false;
+
+
+                Listar();
+            }
+        }
+
+        private void BtnEditar_Click(object sender, EventArgs e)
+        {
+            if (txtNome.Text.ToString().Trim() == "")
+            {
+                txtNome.Text = "";
+                MessageBox.Show("Preencha o Nome", "Campo Vazio", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                txtNome.Focus();
+                return;
+            }
+
+            //CÓDIGO DO BOTÃO PARA EDITAR
+            conect.abrirConexao();
+            sql = "UPDATE usuario SET nome =@nome, cargo =@cargo, usuario =@usuario, senha =@senha where id =@id";
+            cmd = new MySqlCommand(sql, conect.con);
+            cmd.Parameters.AddWithValue("@nome", txtNome.Text);
+            cmd.Parameters.AddWithValue("@cargo", cbCargo.Text);
+            cmd.Parameters.AddWithValue("@usuario", txtUsuario.Text);
+            cmd.Parameters.AddWithValue("@senha", txtSenha.Text);
+            cmd.Parameters.AddWithValue("@id", id);
+
+            //Verificação USUARIO existente e teste para poder modificar o cadastro do usuario
+            if (txtUsuario.Text != usuarioAntigo)
+            {
+                MySqlCommand cmdVerificar;
+                cmdVerificar = new MySqlCommand("SELECT * FROM usuario where usuario =@usuario", conect.con);
+                cmdVerificar.Parameters.AddWithValue("@usuario", txtUsuario.Text);
+                MySqlDataAdapter da = new MySqlDataAdapter();
+                da.SelectCommand = cmdVerificar;
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+                if (dt.Rows.Count > 0)
+                {
+                    MessageBox.Show("USUARIO ja registrado", "Dados Salvo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    txtUsuario.Text = "";
+                    txtUsuario.Focus();
+                    return;
+                }
+            }
+
+            cmd.ExecuteNonQuery();
+            conect.fecharConexao();
+
+            MessageBox.Show("Registro Editado com Sucesso!", "Dados Editados", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            btnNovo.Enabled = true;
+            btnEditar.Enabled = false;
+            btnExcluir.Enabled = false;
             limparCampos();
             desabilitarCampos();
             Listar();

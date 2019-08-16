@@ -102,6 +102,7 @@
             this.grid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.grid.Size = new System.Drawing.Size(372, 192);
             this.grid.TabIndex = 80;
+            this.grid.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.Grid_CellClick);
             this.grid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.Grid_CellContentClick);
             // 
             // btnExcluir
@@ -117,6 +118,7 @@
             this.btnExcluir.Size = new System.Drawing.Size(70, 65);
             this.btnExcluir.TabIndex = 87;
             this.btnExcluir.UseVisualStyleBackColor = true;
+            this.btnExcluir.Click += new System.EventHandler(this.BtnExcluir_Click);
             // 
             // btnEditar
             // 
@@ -131,6 +133,7 @@
             this.btnEditar.Size = new System.Drawing.Size(70, 65);
             this.btnEditar.TabIndex = 86;
             this.btnEditar.UseVisualStyleBackColor = true;
+            this.btnEditar.Click += new System.EventHandler(this.BtnEditar_Click);
             // 
             // btnSalvar
             // 
