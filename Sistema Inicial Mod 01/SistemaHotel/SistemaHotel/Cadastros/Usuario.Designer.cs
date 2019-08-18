@@ -62,6 +62,7 @@
             this.txtBuscarNome.Name = "txtBuscarNome";
             this.txtBuscarNome.Size = new System.Drawing.Size(238, 20);
             this.txtBuscarNome.TabIndex = 74;
+            this.txtBuscarNome.TextChanged += new System.EventHandler(this.TxtBuscarNome_TextChanged);
             // 
             // label2
             // 

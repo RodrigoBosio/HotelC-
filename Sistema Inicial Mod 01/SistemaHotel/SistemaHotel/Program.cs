@@ -8,6 +8,8 @@ namespace SistemaHotel
 {
     static class Program
     {
+        //Declaração de variaveis globais dos sistemas
+        public static string nomeUsuario, cargoUsuario;
         /// <summary>
         /// Ponto de entrada principal para o aplicativo.
         /// </summary>

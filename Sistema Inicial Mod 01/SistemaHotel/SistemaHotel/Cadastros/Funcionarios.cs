@@ -213,7 +213,7 @@ namespace SistemaHotel.Cadastros
             da.Fill(dt);
             if (dt.Rows.Count > 0)
             {
-                MessageBox.Show("CPF ja registrado", "Dados Salvo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("CPF ja registrado", "Erro ao Registrar", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 txtCPF.Text = "";
                 txtCPF.Focus();
                 return;
@@ -276,7 +276,7 @@ namespace SistemaHotel.Cadastros
                 da.Fill(dt);
                 if (dt.Rows.Count > 0)
                 {
-                    MessageBox.Show("CPF ja registrado", "Dados Salvo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("CPF ja registrado", "Erro ao Registrar", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     txtCPF.Text = "";
                     txtCPF.Focus();
                     return;

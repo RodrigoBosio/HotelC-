@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,6 +13,7 @@ namespace SistemaHotel
 {
     public partial class FrmLogin : Form
     {
+        Conexao conect = new Conexao();
         public FrmLogin()
         {
             
@@ -62,12 +64,41 @@ namespace SistemaHotel
                 return;
             }
 
-            //AQUI VAI O CÓDIGO PARA O LOGIN
+            //Código de Verificação do usuario no banco de dados para fazer login no programa
+            MySqlCommand cmdVerificar;
+            MySqlDataReader reader;
 
-            FrmMenu form = new FrmMenu();
-            //this.Hide();
-            Limpar();
-            form.Show();
+            conect.abrirConexao();
+            cmdVerificar = new MySqlCommand("SELECT * FROM usuario where usuario =@usuario and senha =@senha", conect.con);
+            cmdVerificar.Parameters.AddWithValue("@usuario", txtUsuario.Text);
+            cmdVerificar.Parameters.AddWithValue("@senha", txtSenha.Text);
+            reader = cmdVerificar.ExecuteReader();
+            if (reader.HasRows)
+            {
+                //pegando as informações da consulta de login
+                while(reader.Read())
+                {
+                    Program.nomeUsuario = Convert.ToString(reader["nome"]);
+                    Program.cargoUsuario = Convert.ToString(reader["cargo"]);
+                }
+
+                MessageBox.Show("Bem Vindo " + Program.nomeUsuario, "Login Efetuado", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                FrmMenu form = new FrmMenu();
+                //this.Hide();
+                Limpar();
+                form.Show();
+            }
+            else
+            {
+                MessageBox.Show("Dados estão incorretos!", "Erro de Login", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                txtUsuario.Text = "";
+                txtUsuario.Focus();
+                txtSenha.Text = "";
+            }
+            conect.fecharConexao();
+           
+
+           
         }
 
 

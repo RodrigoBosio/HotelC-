@@ -12,6 +12,7 @@ namespace SistemaHotel
 {
     public partial class FrmMenu : Form
     {
+        Conexao conect = new Conexao();
         public FrmMenu()
         {
             InitializeComponent();
@@ -31,6 +32,9 @@ namespace SistemaHotel
         {
             pnlTopo.BackColor = Color.FromArgb(230, 230, 230);
             pnlRight.BackColor = Color.FromArgb(130, 130, 130);
+
+            lblUsuario.Text = Program.nomeUsuario;
+            lblCargo.Text = Program.cargoUsuario;
         }
 
         private void FuncionáriosToolStripMenuItem_Click(object sender, EventArgs e)

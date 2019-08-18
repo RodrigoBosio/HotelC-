@@ -165,7 +165,7 @@ namespace SistemaHotel.Cadastros
             da.Fill(dt);
             if (dt.Rows.Count > 0)
             {
-                MessageBox.Show("Usuario ja registrado", "Dados Salvo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Usuario ja registrado", "Erro ao Registrar", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 txtUsuario.Text = "";
                 txtUsuario.Focus();
                 return;
@@ -231,6 +231,11 @@ namespace SistemaHotel.Cadastros
             }
         }
 
+        private void TxtBuscarNome_TextChanged(object sender, EventArgs e)
+        {
+            BuscarNome();
+        }
+
         private void BtnEditar_Click(object sender, EventArgs e)
         {
             if (txtNome.Text.ToString().Trim() == "")
@@ -263,7 +268,7 @@ namespace SistemaHotel.Cadastros
                 da.Fill(dt);
                 if (dt.Rows.Count > 0)
                 {
-                    MessageBox.Show("USUARIO ja registrado", "Dados Salvo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("USUARIO ja registrado", "Erro ao Registrar", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     txtUsuario.Text = "";
                     txtUsuario.Focus();
                     return;
